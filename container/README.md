@@ -1,6 +1,6 @@
 # Container
 
-This tutorial is from [Docker入门六部曲——容器](https://blog.csdn.net/u011499747/article/details/73693384)
+This tutorial is from [Get Started, Part 2: Containers](https://docs.docker.com/get-started/part2/)
 
 ## Build your docker image
 
