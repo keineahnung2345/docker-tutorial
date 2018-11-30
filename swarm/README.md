@@ -51,7 +51,31 @@ myvm1   -        virtualbox   Running   tcp://192.168.99.100:2376           v18.
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.0   
 </pre>
 
-## (If something went wrong, you may want to remove your docker machiens)
+## (If something went wrong, you may want to shut down and then start your docker machines)
+```sh
+docker-machine stop myvm1
+```
+It will output:
+<pre>
+Stopping "myvm1"...
+Machine "myvm1" was stopped.
+</pre>
+
+```
+docker-machine start myvm1
+```
+It will output:
+<pre>
+Starting "myvm1"...
+(myvm1) Check network to re-create if needed...
+(myvm1) Waiting for an IP...
+Machine "myvm1" was started.
+Waiting for SSH to be available...
+Detecting the provisioner...
+Started machines may have new IP addresses. You may need to re-run the `docker-machine env` command.
+</pre>
+
+## (Or even remove your docker machiens)
 ```sh
 docker-machine rm myvm1
 ```
@@ -132,10 +156,12 @@ upzzrexydlvbru6n3pvfi9u1v *   myvm1               Ready               Active    
 jl8rh4aza9hfcrx9oy2xf3xi9     myvm2               Ready               Active                                  18.09.0
 </pre>
 
-## Configure a docker-machine shell to the swarm manager
+## Use a docker-machine shell to control the swarm manager
+Configure a docker-machine shell to the swarm manager
 ```sh
 eval $(docker-machine env myvm1)
 ```
+This allows you to use your local docker-compose.yml file to deploy the app “remotely” without having to copy it anywhere
 
 Verify that myvm1 is now the active machine:
 ```sh
@@ -147,3 +173,25 @@ NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCK
 myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.0   
 myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.0   
 </pre>
+
+Some operation learned before:
+```sh
+docker stack deploy -c docker-compose.yml getstartedlab
+docker stack ps getstartedlab
+curl http://192.168.99.100 #Fail for me : "curl: (7) Failed to connect to 192.168.99.100 port 80: Connection refused"
+docker stack rm getstartedlab
+```
+
+Unset docker-machine shell variable settings
+```sh
+eval $(docker-machine env -u)
+```
+
+## Or, use docker-machine to send an operation to the swarm manager
+```sh
+docker-machine scp docker-compose.yml myvm1:~
+docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml getstartedlab"
+docker-machine ssh myvm1 "docker stack ps getstartedlab"
+docker-machine ssh myvm1 "curl http://localhost" #Fail for me : curl: (7) Failed to connect to localhost port 80: Connection refused exit status 7
+docker-machine ssh myvm1 "docker stack rm getstartedlab"
+```
