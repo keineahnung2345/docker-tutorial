@@ -131,3 +131,19 @@ ID                            HOSTNAME            STATUS              AVAILABILI
 upzzrexydlvbru6n3pvfi9u1v *   myvm1               Ready               Active              Leader              18.09.0
 jl8rh4aza9hfcrx9oy2xf3xi9     myvm2               Ready               Active                                  18.09.0
 </pre>
+
+## Configure a docker-machine shell to the swarm manager
+```sh
+eval $(docker-machine env myvm1)
+```
+
+Verify that myvm1 is now the active machine:
+```sh
+docker-machine ls
+```
+It will output:
+<pre>
+NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER     ERRORS
+myvm1   *        virtualbox   Running   tcp://192.168.99.100:2376           v18.09.0   
+myvm2   -        virtualbox   Running   tcp://192.168.99.101:2376           v18.09.0   
+</pre>
