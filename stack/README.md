@@ -8,9 +8,12 @@ eval $(docker-machine env myvm1)
 ## Run the application
 ```sh
 docker stack deploy -c docker-compose.yml getstartedlab
+docker stack ls
+docker stack services getstartedlab
 docker stack ps getstartedlab
 curl -4 192.168.99.100:4000 # fail
 curl -4 192.168.99.100:8080 # fail
+docker stack rm getstartedlab
 ```
 
 ## Persist the data using Redis
