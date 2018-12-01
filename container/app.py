@@ -23,8 +23,3 @@ def hello():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=80)
-#--------------------- 
-#作者：无始之名 
-#来源：CSDN 
-#原文：https://blog.csdn.net/u011499747/article/details/73693384 
-#版权声明：本文为博主原创文章，转载请附上博文链接！
