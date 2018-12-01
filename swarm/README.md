@@ -156,6 +156,11 @@ upzzrexydlvbru6n3pvfi9u1v *   myvm1               Ready               Active    
 jl8rh4aza9hfcrx9oy2xf3xi9     myvm2               Ready               Active                                  18.09.0
 </pre>
 
+```sh
+docker-machine ssh myvm2 "docker swarm leave"
+docker-machine ssh myvm1 "docker swarm leave --force"
+```
+
 ## Use a docker-machine shell to control the swarm manager
 Configure a docker-machine shell to the swarm manager
 ```sh
@@ -178,7 +183,11 @@ Some operation learned before:
 ```sh
 docker stack deploy -c docker-compose.yml getstartedlab
 docker stack ps getstartedlab
-curl http://192.168.99.100 #Fail for me : "curl: (7) Failed to connect to 192.168.99.100 port 80: Connection refused"
+docker stack services getstartedlab
+curl -4 http://192.168.99.100:4000 #Fail for me : "curl: (7) Failed to connect to 192.168.99.100 port 4000: Connection refused"
+curl -4 http://192.168.99.100:8080 #Fail
+curl -4 http://localhost:4000 # from inside myvm1, fail
+curl -4 http://localhost:8080 # from inside myvm1, fail
 docker stack rm getstartedlab
 ```
 
@@ -194,4 +203,14 @@ docker-machine ssh myvm1 "docker stack deploy -c docker-compose.yml getstartedla
 docker-machine ssh myvm1 "docker stack ps getstartedlab"
 docker-machine ssh myvm1 "curl http://localhost" #Fail for me : curl: (7) Failed to connect to localhost port 80: Connection refused exit status 7
 docker-machine ssh myvm1 "docker stack rm getstartedlab"
+```
+
+## Use `docker-compose` rather than `docker stack deploy`
+```sh
+docker-machine ssh myvm1 "docker-compose up -d"
+curl -4 http://192.168.99.100:4000 #success
+curl -4 http://192.168.99.100:8080 #success
+docker-machine ssh myvm1 "curl -4 http://localhost:4000" #success
+docker-machine ssh myvm1 "curl -4 http://localhost:8080" #success
+docker-machine ssh myvm1 "docker-compose down"
 ```
